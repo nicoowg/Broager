@@ -1,0 +1,158 @@
+:root {
+  --bg: #0b1020;
+  --bg2: #121a33;
+  --grid: #18233f;
+  --snake: #34e36b;
+  --snake-head: #8effb0;
+  --food: #ff4d6d;
+  --text: #e7ecff;
+  --muted: #8893bd;
+  --accent: #34e36b;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  /* Ingen scroll / bounce / zoom på iPhone */
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#app {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding:
+    calc(var(--safe-top) + 8px)
+    calc(var(--safe-right) + 12px)
+    calc(var(--safe-bottom) + 8px)
+    calc(var(--safe-left) + 12px);
+  background:
+    radial-gradient(120% 80% at 50% -10%, #1a2547 0%, var(--bg) 60%);
+}
+
+/* ---------- HUD ---------- */
+#hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.brand {
+  font-size: clamp(14px, 4.5vw, 20px);
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  text-align: center;
+  white-space: nowrap;
+}
+.stat { display: flex; flex-direction: column; min-width: 64px; }
+.stat.right { align-items: flex-end; }
+.label { font-size: 10px; letter-spacing: 1.5px; color: var(--muted); font-weight: 700; }
+.value { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--accent); }
+
+/* ---------- Spillebræt ---------- */
+#stage {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+#board {
+  background: linear-gradient(160deg, var(--bg2), #0c1326);
+  border-radius: 18px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.05),
+    0 18px 50px rgba(0,0,0,0.55),
+    inset 0 0 60px rgba(0,0,0,0.35);
+  touch-action: none;
+}
+
+/* ---------- Overlay ---------- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 12, 26, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 18px;
+  transition: opacity 0.25s ease;
+}
+.overlay.hidden { opacity: 0; pointer-events: none; }
+.card {
+  text-align: center;
+  padding: 24px 22px;
+  max-width: 320px;
+}
+.card h2 { margin: 0 0 10px; font-size: 26px; font-weight: 800; }
+.card p { margin: 0 0 18px; color: var(--muted); line-height: 1.5; font-size: 15px; }
+.hint { font-size: 12px; opacity: 0.7; margin-top: 16px; }
+.btn {
+  appearance: none;
+  border: none;
+  background: linear-gradient(180deg, var(--snake-head), var(--snake));
+  color: #05210f;
+  font-weight: 800;
+  font-size: 18px;
+  padding: 14px 40px;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(52, 227, 107, 0.35);
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.2s ease;
+}
+.btn:active { transform: scale(0.95); }
+
+/* ---------- Styrekors ---------- */
+#pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 8px;
+  width: min(62vw, 240px);
+  aspect-ratio: 3 / 3;
+  margin: 12px auto 4px;
+  align-self: center;
+}
+.dpad {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  font-size: 20px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.1s ease, transform 0.06s ease;
+}
+.dpad:active { background: rgba(52,227,107,0.25); transform: scale(0.94); }
+.up    { grid-column: 2; grid-row: 1; }
+.left  { grid-column: 1; grid-row: 2; }
+.pause { grid-column: 2; grid-row: 2; font-size: 14px; font-weight: 800; letter-spacing: 1px; color: var(--muted); }
+.right { grid-column: 3; grid-row: 2; }
+.down  { grid-column: 2; grid-row: 3; }
+
+/* På større/landscape skærme skjules dpad — swipe/tastatur er nok */
+@media (min-height: 760px) and (pointer: fine) {
+  #pad { opacity: 0.85; }
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <title>Broager Snake</title>
+
+  <!-- iPhone / mobil optimering -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1020" />
+  <meta name="color-scheme" content="dark" />
+
+  <!-- Gør den installerbar som app på iPhone hjemmeskærm -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Snake" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+  <link rel="icon" href="icons/favicon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="stat">
+        <span class="label">SCORE</span>
+        <span id="score" class="value">0</span>
+      </div>
+      <h1 class="brand">🐍 Broager Snake</h1>
+      <div class="stat right">
+        <span class="label">BEDSTE</span>
+        <span id="best" class="value">0</span>
+      </div>
+    </header>
+
+    <main id="stage">
+      <canvas id="board"></canvas>
+
+      <!-- Start / Game over overlay -->
+      <div id="overlay" class="overlay">
+        <div class="card">
+          <h2 id="overlay-title">Broager Snake</h2>
+          <p id="overlay-text">Swipe for at styre slangen.<br />Spis æblerne 🍎 — ram ikke dig selv!</p>
+          <button id="play-btn" class="btn">Spil</button>
+          <p class="hint">Tip: Læg den på hjemmeskærmen for fuld app-følelse.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Styrekors til tommelfingeren (udover swipe) -->
+    <nav id="pad" aria-label="Styring">
+      <button class="dpad up"    data-dir="up"    aria-label="Op">▲</button>
+      <button class="dpad left"  data-dir="left"  aria-label="Venstre">◀</button>
+      <button class="dpad pause" id="pause-btn" aria-label="Pause">II</button>
+      <button class="dpad right" data-dir="right" aria-label="Højre">▶</button>
+      <button class="dpad down"  data-dir="down"  aria-label="Ned">▼</button>
+    </nav>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
