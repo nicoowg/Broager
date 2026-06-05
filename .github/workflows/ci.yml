@@ -18,7 +18,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             gcc-aarch64-linux-gnu \
-            qemu-system-arm
+            qemu-system-arm \
+            qemu-system-data
 
       - name: Show build environment
         run: make verify

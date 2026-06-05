@@ -19,7 +19,9 @@ OBJDUMP := $(CROSS_COMPILE)objdump
 
 # Emulator
 QEMU := qemu-system-aarch64
-QEMU_FLAGS := -machine virt -cpu cortex-a72 -m 256M -nographic
+# -nic none disables the default virtio NIC so QEMU doesn't need its iPXE
+# option ROM (efi-virtio.rom), which isn't always installed (e.g. minimal CI).
+QEMU_FLAGS := -machine virt -cpu cortex-a72 -m 256M -nographic -nic none
 
 # Compiler Flags
 CFLAGS := -mcpu=cortex-a72 \

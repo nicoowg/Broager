@@ -54,8 +54,9 @@ trap cleanup EXIT
 
 echo "  ▶ booting $KERNEL on $QEMU (deadline ${DEADLINE}s)..."
 # -nographic muxes the UART onto stdio; </dev/null keeps it non-interactive.
+# -nic none avoids needing the default NIC's option ROM (efi-virtio.rom).
 # Keep stderr so QEMU startup errors are visible in the captured log.
-"$QEMU" -machine virt -cpu cortex-a72 -m 256M -nographic \
+"$QEMU" -machine virt -cpu cortex-a72 -m 256M -nographic -nic none \
     -kernel "$KERNEL" </dev/null >"$LOG" 2>&1 &
 QEMU_PID=$!
 
