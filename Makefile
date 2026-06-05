@@ -101,6 +101,11 @@ run: $(KERNEL_ELF)
 	@echo ""
 	$(QEMU) $(QEMU_FLAGS) -kernel $(KERNEL_ELF)
 
+# Boot smoke test: build, boot on QEMU, assert the expected output appears.
+.PHONY: test
+test: $(KERNEL_ELF)
+	@bash tests/boot_test.sh $(KERNEL_ELF)
+
 # Debug run (halts at start, waits for GDB on :1234)
 .PHONY: debug
 debug: $(KERNEL_ELF)
@@ -139,6 +144,7 @@ help:
 	@echo ""
 	@echo "  make           - Build kernel"
 	@echo "  make run       - Run on QEMU"
+	@echo "  make test      - Boot on QEMU and verify output"
 	@echo "  make debug     - Run with GDB stub on :1234"
 	@echo "  make dis       - Generate disassembly"
 	@echo "  make clean     - Remove build artifacts"
