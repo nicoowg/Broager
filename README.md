@@ -1,5 +1,7 @@
 # BuildMyOS
 
+[![CI](https://github.com/nicoowg/Broager/actions/workflows/ci.yml/badge.svg)](https://github.com/nicoowg/Broager/actions/workflows/ci.yml)
+
 A small, from-scratch operating system kernel written in C and **ARM64 /
 AArch64** assembly, booting on the QEMU `virt` machine.
 
