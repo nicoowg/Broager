@@ -1,0 +1,30 @@
+# Build artifacts (but keep the hand-written linker script)
+build/*
+!build/linker.ld
+*.o
+*.elf
+*.bin
+*.img
+*.iso
+*.dis
+
+# Toolchains fetched locally
+arm-toolchain/
+qemu/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test artifacts
+test_output/
+coverage/
