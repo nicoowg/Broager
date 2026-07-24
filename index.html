@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌭 Pølse Tower Defense — Forsvar Pølsevognen!</title>
+<style>
+  :root {
+    --bg: #1a1626;
+    --panel: #241f33;
+    --panel2: #2e2842;
+    --accent: #ffb347;
+    --accent2: #ff6b6b;
+    --text: #f2ecff;
+    --muted: #9d93b8;
+    --good: #7bed9f;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    user-select: none;
+  }
+  h1 {
+    margin: 12px 0 2px;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 0 #000;
+  }
+  h1 .flag { font-size: 1.1rem; }
+  #subtitle { color: var(--muted); font-size: .85rem; margin-bottom: 10px; }
+  #topbar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  .stat {
+    background: var(--panel);
+    border: 2px solid #3a3352;
+    border-radius: 10px;
+    padding: 6px 14px;
+    font-size: .95rem;
+    min-width: 120px;
+    text-align: center;
+  }
+  .stat b { color: var(--accent); }
+  #layout {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 10px 20px;
+  }
+  #gamewrap { position: relative; }
+  canvas {
+    background: #263a1e;
+    border: 3px solid #3a3352;
+    border-radius: 12px;
+    display: block;
+    max-width: 100%;
+    height: auto;
+    cursor: crosshair;
+  }
+  #sidebar {
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .box {
+    background: var(--panel);
+    border: 2px solid #3a3352;
+    border-radius: 12px;
+    padding: 10px;
+  }
+  .box h3 {
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  button {
+    font-family: inherit;
+    background: var(--panel2);
+    color: var(--text);
+    border: 2px solid #453c63;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: .85rem;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: transform .05s, border-color .15s;
+  }
+  button:hover:not(:disabled) { border-color: var(--accent); }
+  button:active:not(:disabled) { transform: scale(.97); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  button.selected { border-color: var(--accent); background: #3d3358; }
+  .shopbtn { margin-bottom: 6px; }
+  .shopbtn small { display: block; color: var(--muted); font-size: .72rem; }
+  .cost { float: right; color: var(--accent); font-weight: bold; }
+  #bigsausage {
+    font-size: 3rem;
+    text-align: center;
+    background: linear-gradient(180deg, #4a3b2a, #33291d);
+    border: 3px solid #6b5436;
+    border-radius: 16px;
+    padding: 10px;
+    cursor: pointer;
+  }
+  #bigsausage:hover { border-color: var(--accent); }
+  #bigsausage small { display: block; font-size: .7rem; color: var(--muted); }
+  #wavebtn {
+    background: linear-gradient(180deg, #5a2e2e, #3d1f1f);
+    border-color: #8a4444;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  #ticker {
+    font-size: .78rem;
+    color: var(--good);
+    min-height: 2.4em;
+    font-style: italic;
+  }
+  #towerinfo { font-size: .8rem; }
+  #towerinfo .row { display: flex; gap: 6px; margin-top: 6px; }
+  #towerinfo .row button { text-align: center; }
+  .smallrow { display: flex; gap: 6px; }
+  .smallrow button { text-align: center; font-size: .75rem; padding: 6px; }
+  #gameover {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 5, 20, .88);
+    border-radius: 12px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 14px;
+    z-index: 5;
+  }
+  #gameover h2 { font-size: 2rem; color: var(--accent2); }
+  #gameover p { color: var(--muted); max-width: 420px; padding: 0 20px; }
+  #gameover button { width: auto; text-align: center; font-size: 1rem; }
+  footer { color: var(--muted); font-size: .7rem; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+  <h1>🌭 PØLSE TOWER DEFENSE <span class="flag">🇩🇰</span></h1>
+  <div id="subtitle">Forsvar pølsevognen mod måger, vikinger og Skattefar!</div>
+
+  <div id="topbar">
+    <div class="stat">🌭 Pølser: <b id="ui-cash">0</b></div>
+    <div class="stat">📈 Indkomst: <b id="ui-income">0</b>/s</div>
+    <div class="stat">❤️ Pølsevogn: <b id="ui-lives">20</b></div>
+    <div class="stat">🌊 Bølge: <b id="ui-wave">0</b></div>
+    <div class="stat">💀 Dræbt: <b id="ui-kills">0</b></div>
+  </div>
+
+  <div id="layout">
+    <div id="gamewrap">
+      <canvas id="game" width="960" height="540"></canvas>
+      <div id="gameover">
+        <h2>GAME OVER 💀</h2>
+        <p id="gameover-text"></p>
+        <button id="restartbtn">🔄 Prøv igen (mågerne griner ad dig)</button>
+      </div>
+    </div>
+
+    <div id="sidebar">
+      <div id="bigsausage" title="Klik for pølser!">🌭<small>KLIK FOR PØLSER! (+<span id="ui-click">1</span>)</small></div>
+
+      <button id="wavebtn">▶ START BØLGE 1</button>
+
+      <div class="box">
+        <h3>🏰 Byg tårne (klik på en byggeplads)</h3>
+        <div id="shop-towers"></div>
+      </div>
+
+      <div class="box">
+        <h3>⬆️ Idle-opgraderinger</h3>
+        <div id="shop-upgrades"></div>
+      </div>
+
+      <div class="box" id="towerinfo-box" style="display:none">
+        <h3>🔧 Valgt tårn</h3>
+        <div id="towerinfo"></div>
+      </div>
+
+      <div class="box">
+        <h3>📢 Pølse-nyt</h3>
+        <div id="ticker">Velkommen! Mågerne har lugtet dine pølser...</div>
+      </div>
+
+      <div class="box smallrow">
+        <button id="savebtn">💾 Gem</button>
+        <button id="resetbtn">🗑️ Nulstil</button>
+        <button id="mutebtn">🔊 Lyd</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>Lavet med kærlighed og remoulade · Broager Skole Hjælp™ (garanteret 0% skolehjælp)</footer>
+
+  <script src="game.js"></script>
+</body>
+</html>
